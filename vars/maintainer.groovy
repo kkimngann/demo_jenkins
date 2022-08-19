@@ -16,22 +16,16 @@ def call(body) {
                      script {
                          println(config.maintainer)
                          println(config.platform)
+                         this.sh 'sudo pip3 install -r requirements.txt'
                      }
 
-                 }
-             }
-             stage('Build') {
-                 steps {
-                     script {
-                         echo 'Build'
-                     }
                  }
              }
 
               stage('Test') {
                  steps {
                      script {
-                        echo 'Test'
+                        this.sh 'pytest --html=log.html Steps_define/test_login.py -s'
                      }
                  }
              }
