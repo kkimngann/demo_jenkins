@@ -1,11 +1,14 @@
 #!groovy
 import se.diabol.jenkins.pipeline.lib.Constants
+import se.diabol.jenkins.pipeline.lib.Shell
 
 def call(body) {
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST
     body.delegate = config
     body()
+
+    def shell = new Shell(this)
 
     pipeline {
         agent any
@@ -16,7 +19,7 @@ def call(body) {
                      script {
                          println(config.maintainer)
                          println(config.platform)
-                         this.sh 'sudo pip3 install -r requirements.txt'
+                         shell.execute('sudo pip3 install -r requirements.txt')
                      }
 
                  }
@@ -25,7 +28,7 @@ def call(body) {
               stage('Test') {
                  steps {
                      script {
-                        this.sh 'pytest --html=log.html Steps_define/test_login.py -s'
+                         shell.execute('pytest --html=log.html Steps_define/test_login.py -s')
                      }
                  }
              }
