@@ -1,10 +1,40 @@
 #!groovy
 import se.diabol.jenkins.pipeline.lib.Constants
 
-def call(args) {
-    def maintainer = args
-    if (args == null || (args instanceof String && args.trim().isEmpty())) {
-        maintainer = Constants.DEFAULT_MAINTAINER_NAME
+def call(body) {
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    pipeline {
+        agent any
+
+         stages {
+             stage('Checkout') {
+                 steps {
+                     script {
+                         println(config.maintainer)
+                         println(config.platform)
+                     }
+
+                 }
+             }
+             stage('Build') {
+                 steps {
+                     script {
+                         echo 'Build'
+                     }
+                 }
+             }
+
+              stage('Test') {
+                 steps {
+                     script {
+                        echo 'Test'
+                     }
+                 }
+             }
+         }
     }
-    echo "Project maintained by $maintainer"
 }
